@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:entrance_test/src/features/dashboard/component/dashboard_controller.dart';
 import 'package:entrance_test/src/features/dashboard/favorite/component/favorite_controller.dart';
 import 'package:entrance_test/src/features/dashboard/products/list/component/product_list_controller.dart';
+import 'package:entrance_test/src/repositories/favorite_product_repository.dart';
 import 'package:entrance_test/src/repositories/product_repository.dart';
 import 'package:entrance_test/src/repositories/user_repository.dart';
 import 'package:get/get.dart';
@@ -22,6 +23,8 @@ class DashboardBinding extends Bindings {
       local: Get.find<GetStorage>(),
     ));
 
+    Get.put(FavoriteProductRepository());
+
     Get.put(
       DashboardController(),
     );
@@ -32,8 +35,11 @@ class DashboardBinding extends Bindings {
 
     Get.put(ProductListController(
       productRepository: Get.find<ProductRepository>(),
+      favoriteProductRepository: Get.find<FavoriteProductRepository>(),
     ));
 
-    Get.put(FavoriteController());
+    Get.put(FavoriteController(
+      favoriteProductRepository: Get.find<FavoriteProductRepository>(),
+    ));
   }
 }
