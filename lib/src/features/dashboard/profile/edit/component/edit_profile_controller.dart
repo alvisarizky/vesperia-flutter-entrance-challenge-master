@@ -74,7 +74,6 @@ class EditProfileController extends GetxController {
         _profilePictureUrlOrPath.value = localUser.profilePicture ?? '';
         _isLoadPictureFromPath.value = false;
 
-        print('GENDER : ${localUser.gender}');
         _gender.value = localUser.gender ?? '';
         if (gender.isNullOrEmpty || gender == 'laki_laki') {
           onChangeGender(false);
@@ -92,7 +91,6 @@ class EditProfileController extends GetxController {
         SnackbarWidget.showFailedSnackbar(response.message);
       }
     } catch (error) {
-      error.printError();
       SnackbarWidget.showFailedSnackbar(NetworkingUtil.errorMessage(error));
     }
   }
