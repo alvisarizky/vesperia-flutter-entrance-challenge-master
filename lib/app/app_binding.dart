@@ -14,7 +14,7 @@ class AppBinding extends Bindings {
   void dependencies() {
     Get.put<GetStorage>(GetStorage());
     Get.put<FavoriteProductRepository>(FavoriteProductRepository());
-    Get.put(FavoriteProductRepository.initDb());
+    Get.put(FavoriteProductRepository().initDb());
 
     Get.put<Dio>(
       Dio(
