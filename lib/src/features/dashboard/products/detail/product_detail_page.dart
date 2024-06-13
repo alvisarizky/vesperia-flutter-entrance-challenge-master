@@ -89,7 +89,8 @@ class ProductDetailPage extends GetView<ProductDetailController> {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  controller.product.priceAfterDiscount.inRupiah(),
+                                  controller.product.priceAfterDiscount
+                                      .inRupiah(),
                                   textAlign: TextAlign.start,
                                   style: const TextStyle(
                                     fontSize: 18,
@@ -302,7 +303,9 @@ class ProductDetailPage extends GetView<ProductDetailController> {
                                 ),
                                 const SizedBox(height: 24),
                                 ...List.generate(
-                                  controller.ratings.length,
+                                  controller.ratings.length > 3
+                                      ? 3
+                                      : controller.ratings.length,
                                   (index) => Container(
                                     margin: EdgeInsets.only(
                                       bottom:
