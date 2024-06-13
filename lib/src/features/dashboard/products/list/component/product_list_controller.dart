@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:entrance_test/app/routes/route_name.dart';
 import 'package:entrance_test/src/constants/local_data_key.dart';
 import 'package:entrance_test/src/models/favorite_product_model.dart';
@@ -14,10 +16,13 @@ import '../../../../../widgets/snackbar_widget.dart';
 
 class ProductListController extends GetxController {
   final ProductRepository _productRepository;
+  final FavoriteProductRepository _favoriteProductRepository;
 
   ProductListController({
     required ProductRepository productRepository,
-  }) : _productRepository = productRepository;
+    required FavoriteProductRepository favoriteProductRepository,
+  })  : _productRepository = productRepository,
+        _favoriteProductRepository = favoriteProductRepository;
 
   final _products = Rx<List<ProductModel>>([]);
 
@@ -70,6 +75,10 @@ class ProductListController extends GetxController {
         getMoreProducts();
       }
     });
+    Timer.periodic(
+      const Duration(seconds: 1),
+      (timer) => setDefaultFavoriteValue(),
+    );
   }
 
   //first load or after refresh.
@@ -98,14 +107,12 @@ class ProductListController extends GetxController {
     _isLoadingRetrieveMoreProduct.value = true;
 
     //TODO: finish this function by calling get product list with appropriate parameters
-    print("SKIP : $_skip");
     try {
       final productList =
           await _productRepository.getProductList(ProductListRequestModel(
         limit: _limit,
         skip: _skip,
       ));
-      print('MORE : ${productList.data.length}');
       _products.value.addAllIf(productList.data.isNotEmpty, productList.data);
       _products.refresh();
       _isLastPageProduct.value = productList.data.length < _limit;
@@ -125,7 +132,7 @@ class ProductListController extends GetxController {
   void setFavorite(ProductModel product) async {
     if (product.isFavorite) {
       product.isFavorite = !product.isFavorite;
-      await FavoriteProductRepository.delete(FavoriteProductModel(
+      await _favoriteProductRepository.delete(FavoriteProductModel(
         productId: product.id,
         name: product.name,
         price: product.price,
@@ -134,7 +141,7 @@ class ProductListController extends GetxController {
       ));
     } else {
       product.isFavorite = !product.isFavorite;
-      await FavoriteProductRepository.insert(FavoriteProductModel(
+      await _favoriteProductRepository.insert(FavoriteProductModel(
         productId: product.id,
         name: product.name,
         price: product.price,
@@ -142,5 +149,24 @@ class ProductListController extends GetxController {
         images: product.images,
       ));
     }
+  }
+
+  void setDefaultFavoriteValue() async {
+    List<Map<String, dynamic>> favorites =
+        await _favoriteProductRepository.query();
+    _favoriteProducts.value =
+        favorites.map((data) => FavoriteProductModel.fromJson(data)).toList();
+
+    for (var product in _products.value) {
+      for (var favorite in favoriteProducts) {
+        if (product.id == favorite.productId) {
+          product.isFavorite = favorite.isFavorite;
+          print("${product.id} : ${product.isFavorite = favorite.isFavorite}");
+        }
+      }
+    }
+    print("Default is call");
+    _products.refresh();
+    _favoriteProducts.refresh();
   }
 }
