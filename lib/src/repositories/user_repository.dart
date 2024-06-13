@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:entrance_test/src/constants/local_data_key.dart';
 import 'package:entrance_test/src/models/response/edit_profile_response_model.dart';
 import 'package:entrance_test/src/models/response/login_response_model.dart';
-import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -54,7 +53,6 @@ class UserRepository {
         options: NetworkingUtil.setupNetworkOptions(
             'Bearer ${_local.read(LocalDataKey.token)}'),
       );
-      debugPrint("LOGOUT RESPONSE : ${responseJson.data}");
       if (responseJson.statusCode == HttpStatus.ok) {
         await _local.remove(LocalDataKey.token);
         return const Right(null);
@@ -70,11 +68,9 @@ class UserRepository {
     await _client.download(
       'https://www.tutorialspoint.com/flutter/flutter_tutorial.pdf',
       '${(await getTemporaryDirectory()).path}flutter_tutorial.pdf',
-      onReceiveProgress: (recivedBytes, totalBytes) {
-        print('DOWNLOAD PROGRESS : $recivedBytes - $totalBytes');
-      },
+      onReceiveProgress: (recivedBytes, totalBytes) {},
       deleteOnError: true,
-    ).then((value) => print('DOWNLOAD VALUE : ${value.data}'));
+    );
   }
 
   Future<UserResponseModel> getUser() async {
@@ -101,8 +97,6 @@ class UserRepository {
     required String picturePath,
   }) async {
     try {
-      print(
-          "REQUIRED : $name - $email - $gender - $dateOfBirth - $height - $weight");
       final responseJson = await _client.post(Endpoint.editUser,
           options: NetworkingUtil.setupNetworkOptions(
             'Bearer ${_local.read(LocalDataKey.token)}',
