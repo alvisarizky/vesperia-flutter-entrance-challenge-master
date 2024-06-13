@@ -8,7 +8,7 @@ import 'app/app_binding.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FavoriteProductRepository.initDb();
+  await FavoriteProductRepository().initDb();
 
   await initializeDateFormatting('en_EN', null)
       .then((_) => runApp(const MainApp()));
