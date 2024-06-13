@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:entrance_test/src/utils/number_ext.dart';
@@ -17,33 +19,31 @@ class ProductListPage extends GetWidget<ProductListController> {
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
           backgroundColor: white,
-          body: Expanded(
-            child: RefreshIndicator(
-              onRefresh: () {
-                return Future.delayed(const Duration(seconds: 0), () {
-                  controller.getProducts();
-                });
-              },
-              child: Obx(
-                () => (controller.isLoadingRetrieveProduct)
-                    ? const Center(
-                        child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(primary),
-                      ))
-                    : (controller.products.isEmpty)
-                        ? Stack(
-                            children: [
-                              ListView(),
-                              const Center(
-                                child: EmptyListStateWidget(
-                                  iconSource: ic_empty_data,
-                                  text: "No product to show",
-                                ),
+          body: RefreshIndicator(
+            onRefresh: () {
+              return Future.delayed(const Duration(seconds: 0), () {
+                controller.getProducts();
+              });
+            },
+            child: Obx(
+              () => (controller.isLoadingRetrieveProduct)
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(primary),
+                    ))
+                  : (controller.products.isEmpty)
+                      ? Stack(
+                          children: [
+                            ListView(),
+                            const Center(
+                              child: EmptyListStateWidget(
+                                iconSource: ic_empty_data,
+                                text: "No product to show",
                               ),
-                            ],
-                          )
-                        : buildProductList(context),
-              ),
+                            ),
+                          ],
+                        )
+                      : buildProductList(context),
             ),
           ),
         ),
@@ -56,17 +56,21 @@ class ProductListPage extends GetWidget<ProductListController> {
       crossAxisSpacing: 16,
       mainAxisSpacing: 16,
       shrinkWrap: true,
-      itemCount: controller.products.length,
+      itemCount:
+          controller.products.length + (controller.isLastPageProduct ? 0 : 1),
       builder: (context, index) {
-        print("LENGTH : ${controller.products.length} - $index");
-        if (index == controller.products.length) {
-          return const Center(
-              child: Padding(
-            padding: EdgeInsets.all(8),
-            child: CircularProgressIndicator(),
-          ));
+        if (!controller.isLastPageProduct &&
+            index == controller.products.length) {
+          return const Padding(
+            padding: EdgeInsets.all(12.0),
+            child: Center(
+                child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(primary),
+            )),
+          );
         } else {
           final product = controller.products[index];
+
           return Container(
             margin: EdgeInsets.only(
                 left: index % 2 == 0 ? 24 : 0,
@@ -114,7 +118,7 @@ class ProductListPage extends GetWidget<ProductListController> {
                             InkWell(
                                 onTap: () => {controller.setFavorite(product)},
                                 child: Padding(
-                                  padding: EdgeInsets.all(8),
+                                  padding: const EdgeInsets.all(8),
                                   child: Obx(
                                     () => Image.asset(
                                       product.isFavorite
