@@ -1,4 +1,5 @@
 import 'package:entrance_test/src/constants/color.dart';
+import 'package:entrance_test/src/features/dashboard/profile/component/profile_controller.dart';
 import 'package:entrance_test/src/repositories/user_repository.dart';
 import 'package:entrance_test/src/utils/image_util.dart';
 import 'package:entrance_test/src/utils/string_ext.dart';
@@ -159,11 +160,15 @@ class EditProfileController extends GetxController {
             return SnackbarWidget.showFailedSnackbar(l);
           }, (r) async {
             _isUpdateInProgress.value = !_isUpdateInProgress.value;
-            loadUserFromServer();
-            return SnackbarWidget.showSuccessSnackbar(r.message ?? '');
 
-            // Get.offAllNamed(RouteName.dashboard);
+            SnackbarWidget.showSuccessSnackbar(r.message ?? '');
           }),
         );
+  }
+
+  void backToProfilePage() {
+    Get.delete<ProfileController>();
+
+    Get.back();
   }
 }
