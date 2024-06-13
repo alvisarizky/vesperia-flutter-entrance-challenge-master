@@ -23,6 +23,10 @@ class EditProfilePage extends GetView<EditProfileController> {
         child: Scaffold(
           backgroundColor: white,
           appBar: AppBar(
+            // leading: IconButton(
+            //   onPressed: () => controller.backToProfilePage(),
+            //   icon: const Icon(Icons.arrow_back_sharp),
+            // ),
             title: const Text(
               "Edit Profile",
               style: TextStyle(
