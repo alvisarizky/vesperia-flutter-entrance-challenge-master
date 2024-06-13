@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:entrance_test/app/routes/route_name.dart';
 import 'package:entrance_test/src/constants/local_data_key.dart';
 import 'package:entrance_test/src/models/favorite_product_model.dart';
@@ -6,35 +8,48 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class FavoriteController extends GetxController {
+  final FavoriteProductRepository _favoriteProductRepository;
+
+  FavoriteController({
+    required FavoriteProductRepository favoriteProductRepository,
+  }) : _favoriteProductRepository = favoriteProductRepository;
+
   @override
   void onInit() {
+    Timer.periodic(
+      const Duration(seconds: 1),
+      (timer) => getAllFavoriteProducts(),
+    );
     super.onInit();
-    // Future.delayed(const Duration(seconds: 5), () => getAllFavoriteProducts());
   }
 
   final _favoriteProducts = Rx<List<FavoriteProductModel>>([]);
 
   List<FavoriteProductModel> get favoriteProducts => _favoriteProducts.value;
 
-  final _isLoadingRetrieveProduct = false.obs;
-
-  bool get isLoadingRetrieveProduct => _isLoadingRetrieveProduct.value;
-
   Future<void> getAllFavoriteProducts() async {
-    _isLoadingRetrieveProduct.value = !_isLoadingRetrieveProduct.value;
-
     List<Map<String, dynamic>> favorites =
-        await FavoriteProductRepository.query();
-    _favoriteProducts.value.assignAll(
-        favorites.map((data) => FavoriteProductModel.fromJson(data)).toList());
+        await _favoriteProductRepository.query();
+    _favoriteProducts.value =
+        favorites.map((data) => FavoriteProductModel.fromJson(data)).toList();
     _favoriteProducts.refresh();
     print("DATA LENGTH : ${_favoriteProducts.value.length}");
-
-    _isLoadingRetrieveProduct.value = !_isLoadingRetrieveProduct.value;
   }
 
   void toProductDetail(FavoriteProductModel product) async {
     await GetStorage().write(LocalDataKey.productId, product.productId);
     Get.toNamed(RouteName.productDetail);
+  }
+
+  void setFavorite(FavoriteProductModel product) async {
+    product.isFavorite = !product.isFavorite;
+    await _favoriteProductRepository.delete(FavoriteProductModel(
+      productId: product.productId,
+      name: product.name,
+      price: product.price,
+      discountPrice: product.discountPrice,
+      images: product.images,
+    ));
+    _favoriteProducts.refresh();
   }
 }
