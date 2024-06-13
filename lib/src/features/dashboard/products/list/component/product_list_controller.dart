@@ -161,11 +161,9 @@ class ProductListController extends GetxController {
       for (var favorite in favoriteProducts) {
         if (product.id == favorite.productId) {
           product.isFavorite = favorite.isFavorite;
-          print("${product.id} : ${product.isFavorite = favorite.isFavorite}");
         }
       }
     }
-    print("Default is call");
     _products.refresh();
     _favoriteProducts.refresh();
   }
