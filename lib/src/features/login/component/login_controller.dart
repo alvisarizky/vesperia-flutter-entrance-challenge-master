@@ -56,7 +56,6 @@ class LoginController extends GetxController {
         )
         .then(
           (value) => value.fold((l) {
-            print("LEFT : $l");
             isLoading.value = !isLoading.value;
             return SnackbarWidget.showFailedSnackbar(l);
           }, (r) async {
