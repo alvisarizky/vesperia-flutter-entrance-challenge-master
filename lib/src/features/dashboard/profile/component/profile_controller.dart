@@ -58,18 +58,6 @@ class ProfileController extends GetxController {
     }
   }
 
-  onUpdateProfile({String? name, String? profilePictureUrl}) async {
-    if (name != null) {
-      _name.value = name;
-      _name.refresh();
-    }
-
-    if (profilePictureUrl != null) {
-      _profilePictureUrl.value = profilePictureUrl;
-      _profilePictureUrl.refresh();
-    }
-  }
-
   onEditProfileClick() async {
     Get.toNamed(RouteName.editProfile);
   }
