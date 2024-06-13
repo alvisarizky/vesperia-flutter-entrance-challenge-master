@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 import 'product_image_model.dart';
 
 class FavoriteProductModel {
@@ -8,6 +10,7 @@ class FavoriteProductModel {
     this.price,
     this.discountPrice,
     this.images,
+    this.isFavorited,
   });
 
   int? id;
@@ -16,6 +19,11 @@ class FavoriteProductModel {
   int? price;
   int? discountPrice;
   List<ProductImageModel>? images;
+  int? isFavorited;
+
+  final _isFavorite = true.obs;
+  bool get isFavorite => _isFavorite.value;
+  set isFavorite(bool newValue) => _isFavorite.value = newValue;
 
   FavoriteProductModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
