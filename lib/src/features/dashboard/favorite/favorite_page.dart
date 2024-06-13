@@ -4,6 +4,7 @@ import 'package:entrance_test/src/constants/color.dart';
 import 'package:entrance_test/src/constants/icon.dart';
 import 'package:entrance_test/src/features/dashboard/favorite/component/favorite_controller.dart';
 import 'package:entrance_test/src/utils/number_ext.dart';
+import 'package:entrance_test/src/widgets/empty_list_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,19 +13,30 @@ class FavoritePage extends GetView<FavoriteController> {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: Scaffold(
-          backgroundColor: white,
-          body: RefreshIndicator(
-            onRefresh: () {
-              return Future.delayed(const Duration(seconds: 0), () {
-                controller.getAllFavoriteProducts();
-              });
-            },
-            child: Obx(() => buildProductList(context)),
-          ),
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        backgroundColor: white,
+        body: RefreshIndicator(
+          onRefresh: () {
+            return Future.delayed(const Duration(seconds: 0), () {
+              controller.getAllFavoriteProducts();
+            });
+          },
+          child: Obx(() => (controller.favoriteProducts.isEmpty)
+              ? Stack(
+                  children: [
+                    ListView(),
+                    const Center(
+                      child: EmptyListStateWidget(
+                        iconSource: ic_empty_data,
+                        text: "No product to show",
+                      ),
+                    ),
+                  ],
+                )
+              : buildProductList(context)),
         ),
-      );
+      ));
 
   Widget buildProductList(BuildContext context) => DynamicHeightGridView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -32,7 +44,7 @@ class FavoritePage extends GetView<FavoriteController> {
       crossAxisSpacing: 16,
       mainAxisSpacing: 16,
       shrinkWrap: true,
-      itemCount: 2,
+      itemCount: controller.favoriteProducts.length,
       builder: (context, index) {
         final product = controller.favoriteProducts[index];
         return Container(
@@ -80,17 +92,18 @@ class FavoritePage extends GetView<FavoriteController> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           InkWell(
-                              // onTap: () => {controller.setFavorite(product)},
-                              child: Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Obx(
-                              () => Image.asset(
-                                ic_favorite_filled,
+                            onTap: () => {controller.setFavorite(product)},
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Image.asset(
+                                product.isFavorite
+                                    ? ic_favorite_filled
+                                    : ic_favorite_empty,
                                 width: 24,
                                 height: 24,
                               ),
                             ),
-                          ))
+                          )
                         ],
                       ),
                     ],
