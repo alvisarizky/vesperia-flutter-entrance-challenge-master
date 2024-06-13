@@ -100,7 +100,6 @@ class ProfileController extends GetxController {
           Get.back();
           await _userRepository.logout().then(
                 (value) => value.fold((l) {
-                  print("LEFT : $l");
                   isLoading.value = !isLoading.value;
                   return SnackbarWidget.showFailedSnackbar(l);
                 }, (r) async {
