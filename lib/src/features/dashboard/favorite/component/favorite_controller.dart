@@ -33,7 +33,6 @@ class FavoriteController extends GetxController {
     _favoriteProducts.value =
         favorites.map((data) => FavoriteProductModel.fromJson(data)).toList();
     _favoriteProducts.refresh();
-    print("DATA LENGTH : ${_favoriteProducts.value.length}");
   }
 
   void toProductDetail(FavoriteProductModel product) async {
