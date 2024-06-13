@@ -242,8 +242,6 @@ class LoginPage extends GetView<LoginController> {
                             suffixIcon: GestureDetector(
                               onTap: () {
                                 controller.toggleObscure();
-                                print(
-                                    "OBSECURE: ${controller.isObscure.value}");
                               },
                               child: const Padding(
                                 padding: EdgeInsets.all(14.0),
