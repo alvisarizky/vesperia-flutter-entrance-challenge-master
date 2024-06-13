@@ -26,7 +26,7 @@ class DialogWidget {
                 onPressed: () {
                   Get.back();
                 },
-                icon: Icon(Icons.close_rounded),
+                icon: const Icon(Icons.close_rounded),
               )
             ],
           ),
