@@ -9,7 +9,6 @@ class SplashController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    print("LOCAL TOKEN : ${getStorage.read(LocalDataKey.token) != null}");
     Future.delayed(const Duration(seconds: 3), () {
       if (getStorage.read(LocalDataKey.isFirstTime) == null) {
         Get.offAllNamed(RouteName.boarding);
